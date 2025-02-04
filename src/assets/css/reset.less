@@ -1,0 +1,93 @@
+/* ======================
+   RESET.LESS
+   Modern CSS Reset (Less Version)
+   Version: 1.1
+   Author: cpy
+   ====================== */
+
+/* 核心全局重置 */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;    // 统一盒模型计算方式
+  margin: 0;
+  padding: 0;
+}
+
+/* 文档基础重置 */
+html {
+  line-height: 1.15;         // 修正默认行高
+  -webkit-tap-highlight-color: transparent; // 移除移动端点击高亮
+}
+
+/* 主体与滚动 */
+body {
+  min-height: 100vh;
+  scroll-behavior: smooth;   // 启用平滑滚动
+  text-rendering: optimizeSpeed;
+}
+
+/* 元素默认样式清除 */
+a, button, input, textarea {
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+}
+
+/* 链接重置 */
+a {
+  text-decoration: none;
+  background-color: transparent;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+/* 列表样式清除 */
+ul, ol {
+  list-style: none;
+}
+
+/* 媒体元素适配 */
+img, video, canvas {
+  max-width: 100%;
+  height: auto;
+  display: block;          // 消除图片底部间隙
+}
+
+svg {
+  fill: currentColor;      // SVG颜色继承
+}
+
+/* 表单元素统一 */
+button, input, select, textarea {
+  background: none;
+  border: none;
+  outline: none;
+  appearance: none;        // 清除原生样式
+}
+
+button {
+  cursor: pointer;
+}
+
+/* 表格重置 */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* 隐藏类 */
+.hidden,
+[hidden] {
+  display: none !important;
+}
+
+/* 打印优化 */
+@media print {
+  * {
+    background: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}
