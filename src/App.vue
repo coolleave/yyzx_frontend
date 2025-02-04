@@ -4,8 +4,7 @@
 
 <template>
   <div class="app">
-   hello,cpy
-
+    <router-view />
   </div>
 </template>
 
