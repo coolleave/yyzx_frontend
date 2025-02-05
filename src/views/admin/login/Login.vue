@@ -7,7 +7,7 @@
      <div class="container">
         <div class="box">
         <div class="content">
-            <h2>登录</h2>
+            <h2>后台管理</h2>
             <div>
                 <input type="text" placeholder="请输入用户名">
             </div>

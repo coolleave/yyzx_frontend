@@ -1,10 +1,10 @@
 // 路由表
 const constantRouterMap = [
   // ************* 前台路由 **************
-  // {
-  //   // path: '/',
-  //   // redirect: '/index'
-  // },
+  {
+    path: '/',
+    redirect: '/adminLogin'
+  },
   
   // 后台登录
   {
