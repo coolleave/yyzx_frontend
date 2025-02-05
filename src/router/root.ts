@@ -26,6 +26,11 @@ const constantRouterMap = [
     // ...existing code...
     // notFound 路由配置
     {
+      path:'/404',
+      name:'notFound',
+      component: () => import('@/views/admin/notFound/NotFound.vue'),
+    },
+    {
       path: '/:pathMatch(.*)*', // 此处需特别注意至于最底部
       name: 'notFound',
       component: () => import('@/views/admin/notFound/NotFound.vue'),

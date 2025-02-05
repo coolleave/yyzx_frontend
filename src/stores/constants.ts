@@ -1,6 +1,14 @@
-const BASE_URL = 'http://127.0.0.1:9100'
+let BASE_URL = ''
 // const BASE_URL = 'http://1.117.171.66:9100'
+// 判断是开发环境还是生产环境
 
+if(import.meta.env.MODE === 'development'){
+    // 开发环境
+    BASE_URL = 'http://127.0.0.1:8080'
+}else{
+    // 生产环境
+    BASE_URL = 'http://'
+}
 const USER_ID = 'user_id'
 const USER_NAME = 'user_name'
 const USER_TOKEN = 'authentication'
