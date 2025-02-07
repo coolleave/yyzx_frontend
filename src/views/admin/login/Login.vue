@@ -3,11 +3,15 @@ import { adminLoginApi } from '@/api/admin/employeeApi';
 import { ref } from 'vue';
 import router from "@/router/index"
 import { ElMessage } from 'element-plus';
+import {useAdminStore} from "@/stores/admin/adminStore";
 // 初始化登录表单数据
 const loginForm = ref({
     username: '',
     password: ''
 });
+
+// 获取store
+const adminStore = useAdminStore();
 
 
 // 表单规则校验
@@ -55,7 +59,10 @@ const login = async () => {
         // 存储token
         localStorage.setItem('token', res.data.token);
         // 打印token
+        // 将用户信息存到pinia中
+        adminStore.adminInfo = res.data;
         // console.log(localStorage.getItem('token'));
+        ElMessage.success('登录成功');
         // 跳转到首页
         router.push({ path: '/admin' });
     } else {
