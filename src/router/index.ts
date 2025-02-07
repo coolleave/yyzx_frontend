@@ -1,6 +1,6 @@
-import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import root from './root'
-import { ADMIN_USER_TOKEN, USER_TOKEN } from '@/stores/constants'
+import { ADMIN_USER_TOKEN } from '@/stores/constants'
 
 // 路由权限白名单
 const allowList = ['adminLogin', 'login', 'register', 'portal', 'search', 'detail', '403', '404']
@@ -14,7 +14,14 @@ const router = createRouter({
   routes: root
 });
 
+// 路由守卫
+router.beforeEach((to, _from) => {
 
+  // 判断是否登录
+  if (to.path === "/admin" && !localStorage.getItem(ADMIN_USER_TOKEN)) {
+    return "/adminLogin"
+  }
+})
 // router.beforeEach(async (to, from, next) => {
 
 //   /** 后台路由 **/
