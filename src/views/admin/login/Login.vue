@@ -4,6 +4,7 @@ import { ref } from 'vue';
 import router from "@/router/index"
 import { ElMessage } from 'element-plus';
 import {useAdminStore} from "@/stores/admin/adminStore";
+import { ADMIN_USER_TOKEN } from '@/stores/constants'
 // 初始化登录表单数据
 const loginForm = ref({
     username: '',
@@ -57,7 +58,7 @@ const login = async () => {
         // 登录成功
 
         // 存储token
-        localStorage.setItem('token', res.data.token);
+        localStorage.setItem(ADMIN_USER_TOKEN, res.data.token);
         // 打印token
         // 将用户信息存到pinia中
         adminStore.adminInfo = res.data;
