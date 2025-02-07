@@ -12,7 +12,6 @@ export default defineConfig({
   plugins: [
     vue(),
     vueDevTools(),
-// 饿了么插件
     AutoImport({
       resolvers: [ElementPlusResolver()],
     }),
@@ -25,4 +24,17 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://182.92.111.155',  // 后端服务器地址
+        changeOrigin: true,               // 允许代理改变请求头中的 Origin
+        rewrite: (path) => {
+          console.log('Rewriting path:', path);
+          return path.replace(/^\/api/, '');
+        }, // 去掉/api前缀
+
+      }
+    }
+  }
 })

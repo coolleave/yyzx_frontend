@@ -2,28 +2,72 @@
 import { adminLoginApi } from '@/api/admin/employeeApi';
 import { ref } from 'vue';
 import router from "@/router/index"
-
+import { ElMessage } from 'element-plus';
 // 初始化登录表单数据
 const loginForm = ref({
     username: '',
     password: ''
 });
 
-// 定义login
-const login =  async() => {
+
+// 表单规则校验
+// 用于存储验证错误信息
+const errors = ref<{ username?: string; password?: string }>({});
+
+// 校验用户名
+const validateUsername = () => {
+  if (!loginForm.value.username) {
+    errors.value.username = '账号不能为空';
+  } else {
+    errors.value.username = '';
+  }
+};
+
+// 校验密码
+const validatePassword = () => {
+  if (!loginForm.value.password) {
+    errors.value.password = '密码不能为空';
+  } else if (loginForm.value.password.length < 5 || loginForm.value.password.length >= 13) {
+    errors.value.password = '密码要在6-14位之间';
+  } else {
+    errors.value.password = '';
+  }
+};
+
+// 登录操作
+const login = async () => {
+  // 手动触发校验
+  validateUsername();
+  validatePassword();
+
+  // 检查是否有错误
+  if (errors.value.username || errors.value.password) {
+    return; // 如果有错误则不提交
+    }
     // 调用登录接口
     const res =  await adminLoginApi(loginForm.value);
+    // console.log(res.status);
+    
     // 判断登录是否成功
-    if (res.code === 200) {
+    if (res.code === 1) {
         // 登录成功
+
+        // 存储token
+        localStorage.setItem('token', res.data.token);
+        // 打印token
+        // console.log(localStorage.getItem('token'));
         // 跳转到首页
-        router.push({ path: '/admin/home' });
+        router.push({ path: '/admin' });
     } else {
         // 登录失败
         // 提示错误信息
-        alert(res.message);
+        ElMessage.error(res.msg);
+        
     }
 };
+
+
+
 </script>
 
 <template>
@@ -33,17 +77,19 @@ const login =  async() => {
             <div class="content">
                 <h2>后台管理</h2>
                 <div>
-                    <input type="text" placeholder="请输入用户名" v-model="loginForm.username">
+                    <input type="text" placeholder="请输入用户名" v-model="loginForm.username" @blur="validateUsername">
                 </div>
+                <span v-if="errors.username" class="error-message">{{ errors.username }}</span>
                 <div>
-                    <input type="password" placeholder="请输入密码" v-model="loginForm.password">
+                    <input type="password" placeholder="请输入密码" v-model="loginForm.password"  @blur="validatePassword">
                 </div>
+                <span v-if="errors.password" class="error-message">{{ errors.password }}</span>
                 <div>
                     <input type="submit" value="登录" @click="login">
                 </div>
             </div>
-            <a href="#" class="btns"></a>
-            <a href="#" class="btns register"></a>
+            <a href="#" class="btns">yyzx_onlien</a>
+            <a href="#" class="btns register">宇优在线</a>
         </div>
     </div>
 
@@ -51,6 +97,13 @@ const login =  async() => {
 </template>
 
 <style scoped>
+/* 表单数据验证信息样式 */
+
+.error-message {
+  color: red;
+  font-size: 12px;
+  margin-top: 0px;
+}
 /* 容器样式设置 */
 .container
 {

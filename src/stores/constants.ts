@@ -4,8 +4,8 @@ let BASE_URL = ''
 
 if (import.meta.env.MODE === 'development') {
     // 开发环境
-    // BASE_URL = 'http://182.92.111.155:8080'
-    BASE_URL = 'http://localhost/api/'
+    BASE_URL = 'http://182.92.111.155'
+    // BASE_URL = 'http://localhost/'
 } else {
     // 生产环境
     BASE_URL = 'http://'
