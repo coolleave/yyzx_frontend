@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    i am main header
+    <!-- i am main header -->
 </template>
 
 <style scoped>
