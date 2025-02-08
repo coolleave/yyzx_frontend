@@ -2,19 +2,24 @@
 import adminMainAside from './components/adminMainAside.vue';
 import adminMainHeader from './components/adminMainHeader.vue';
 import adminMainMain from './components/adminMainMain.vue';
+import { ref } from 'vue';
+const isFold = ref(false)
+const handleFold = (isFoldemits:boolean) => {
+    isFold.value = isFoldemits
+}
 </script>
 
 <template>
   <div class="common-layout" style="height: 100vh;">
     <el-container class="main-content">
-      <el-aside width="300px">
-        <adminMainAside />
+      <el-aside :width="isFold ? '60px' : '200px'">
+        <adminMainAside :isFold="isFold" />
       </el-aside>
 
       <el-container>
 
         <el-header>
-            <adminMainHeader />
+            <adminMainHeader @foldEmit="handleFold" />
         </el-header>
 
         <el-main>
@@ -31,14 +36,17 @@ import adminMainMain from './components/adminMainMain.vue';
         height: 100%;
     }
     .el-aside {
-        width: 200px;
+        /* width: 200px; */
     }
     .el-header {
-        background-color: #409EFF;
-        color: #fff;
+        padding:0;
     }
     .el-main {
         background-color: #f0f0f0;
         color: #333;
     }
+/* aside折叠动画过渡 */
+.el-aside {
+    transition: width 0.5s;
+}
 </style>
