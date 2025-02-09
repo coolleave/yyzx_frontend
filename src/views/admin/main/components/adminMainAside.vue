@@ -20,7 +20,7 @@ const ref = defineProps({
     
     <div class="menu">
       <el-menu
-        default-active="1"
+        default-active="0"
         :collapse="isFold"
         @open="handleOpen"
         @close="handleClose"
@@ -33,7 +33,7 @@ const ref = defineProps({
       <h5 v-if="!isFold">宇优后台管理</h5>
     </div>
         <!-- 总览 -->
-        <el-menu-item index="1">
+        <el-menu-item index="1" @click="$router.push('/admin/overview')">
           <template #title>
             <i class="iconfont icon-overview"></i>
             <span>总览</span>
@@ -41,31 +41,38 @@ const ref = defineProps({
         </el-menu-item>
 
         <!-- 员工管理 -->
-        <el-menu-item index="2">
+        <el-menu-item index="2" @click="$router.push('/admin/employee')">
+          <template #title>
           <i class="iconfont icon-admin"></i>
           <span>员工管理</span>
+        </template>
         </el-menu-item>
 
         <!-- 分类管理 -->
-        <el-menu-item index="3">
+        <el-menu-item index="3" @click="$router.push('/admin/category')">
           <i class="iconfont icon-category"></i>
           <span>分类管理</span>
         </el-menu-item>
 
+        <!-- 商品管理 -->
+        <el-menu-item index="4" @click="$router.push('/admin/goods')">
+          <i class="iconfont icon-goods"></i>
+          <span>商品管理</span>
+        </el-menu-item>
         <!-- 订单管理 -->
-        <el-menu-item index="4">
+        <el-menu-item index="5" @click="$router.push('/admin/order')">
           <i class="iconfont icon-order"></i>
           <span>订单管理</span>
         </el-menu-item>
 
         <!-- 用户管理 -->
-        <el-menu-item index="5">
+        <el-menu-item index="6" @click="$router.push('/admin/user')">
           <i class="iconfont icon-user"></i>
           <span>用户管理</span>
         </el-menu-item>
 
         <!-- 系统信息 -->
-        <el-menu-item index="6">
+        <el-menu-item index="7" @click="$router.push('/admin/system')">
           <i class="iconfont icon-system"></i>
           <span>系统信息</span>
         </el-menu-item>

@@ -3,7 +3,9 @@
 </script>
 
 <template>
- <!-- i am main main -->
+ <RouterView>
+    
+ </RouterView>
 </template>
 
 <style scoped>

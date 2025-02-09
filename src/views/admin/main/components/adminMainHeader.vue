@@ -58,8 +58,8 @@ const logout = async() => {
   localStorage.removeItem('token')
   const adminStore = useAdminStore()
   adminStore.adminInfo = ''
-  router.push('/adminLogin')  // 跳转到登录页
-  
+  // 跳到登录页
+  router.push('/adminLogin')
   dialogVisible.value = false  // 关闭对话框
 }
 

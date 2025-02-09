@@ -35,15 +35,8 @@ const handleFold = (isFoldemits:boolean) => {
     .main-content {
         height: 100%;
     }
-    .el-aside {
-        /* width: 200px; */
-    }
     .el-header {
         padding:0;
-    }
-    .el-main {
-        /* background-color: #f0f0f0; */
-        /* color: #333; */
     }
 /* aside折叠动画过渡 */
 .el-aside {

@@ -2,7 +2,7 @@ import axios from "axios";
 import 'element-plus/es/components/message/style/css';
 import { ElMessage } from 'element-plus';
 import { BASE_URL } from "@/stores/constants.ts";
-import router from "@/router";
+import router from "@/router/index";
 
 // 只导入类型
 import type { AxiosRequestConfig, AxiosResponse, AxiosError, InternalAxiosRequestConfig } from "axios";

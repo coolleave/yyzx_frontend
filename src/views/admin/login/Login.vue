@@ -65,7 +65,9 @@ const login = async () => {
         // console.log(localStorage.getItem('token'));
         ElMessage.success('登录成功');
         // 跳转到首页
-        router.push({ path: '/admin' });
+        router.push('/admin');
+        console.log("跳转首页");
+        
     } else {
         // 登录失败
         // 提示错误信息
