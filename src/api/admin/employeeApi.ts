@@ -13,3 +13,10 @@ export function adminLoginApi(fromData: AdminLoginParams) {
         fromData  // 这里的 fromData 会根据 AdminLoginParams 类型进行严格检查
     );
 }
+
+// 员工登出
+export function adminLogoutApi() {
+    return post(
+        "/api/admin/employee/logout",
+    );
+}

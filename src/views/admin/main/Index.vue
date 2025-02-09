@@ -42,8 +42,8 @@ const handleFold = (isFoldemits:boolean) => {
         padding:0;
     }
     .el-main {
-        background-color: #f0f0f0;
-        color: #333;
+        /* background-color: #f0f0f0; */
+        /* color: #333; */
     }
 /* aside折叠动画过渡 */
 .el-aside {

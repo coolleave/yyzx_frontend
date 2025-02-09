@@ -1,35 +1,31 @@
-<script setup lang="ts" name="adminMainHeader">
-import {
-  Fold,
-  Expand,
-  Setting,
-  User,
-} from '@element-plus/icons-vue'
-import { ref } from 'vue'
+
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import { defineEmits, computed } from 'vue'
-import {adminGetStatusApi,adminSetStatusApi} from "@/api/admin/shopApi"
-import { onMounted } from 'vue'
+import { adminGetStatusApi, adminSetStatusApi } from "@/api/admin/shopApi"
+import { ElButton, ElDialog } from 'element-plus'
+import { Fold, Expand, Setting, User } from '@element-plus/icons-vue'
+import  router from "@/router/index"
+import { useAdminStore } from '@/stores/admin/adminStore'
+import {adminLogoutApi} from "@/api/admin/employeeApi"
 // 定义折叠状态
 const isFold = ref(false)
 
 // 定义发送折叠信号
 const emit = defineEmits(['foldEmit'])
+
 // 折叠展开切换
 const foldChange = () => {
-  // 状态切换
   isFold.value = !isFold.value
-  // 发送信号
   emit('foldEmit', isFold.value)
 }
 
 // 初始化店铺状态
 const status = ref(1)  // 0代表未营业，1代表营业中
-const getStatus  = async()=>{
-  const res = await adminGetStatusApi();
-  status.value = res.data;
+const getStatus = async () => {
+  const res = await adminGetStatusApi()
+  status.value = res.data
 }
-
-
 
 // 计算属性，根据status返回对应的文本和类名
 const statusText = computed(() => {
@@ -41,15 +37,40 @@ const statusClass = computed(() => {
 })
 
 // 设置店铺状态
-const setStatus = async(newStatus: number) => {
+const setStatus = async (newStatus: number) => {
   await adminSetStatusApi(newStatus)
   status.value = newStatus
 }
 
-onMounted(()=>{
-    getStatus()
-})
+const dialogVisible = ref(false)  // 控制对话框的显示与隐藏
 
+// 弹出退出确认对话框
+const showLogoutDialog = () => {
+  dialogVisible.value = true
+}
+
+// 退出登录操作
+const logout = async() => {
+  console.log('用户已退出登录')
+  await adminLogoutApi()
+  
+  // 清除token
+  localStorage.removeItem('token')
+  const adminStore = useAdminStore()
+  adminStore.adminInfo = ''
+  router.push('/adminLogin')  // 跳转到登录页
+  
+  dialogVisible.value = false  // 关闭对话框
+}
+
+// 取消退出登录
+const cancelLogout = () => {
+  dialogVisible.value = false  // 关闭对话框
+}
+
+onMounted(() => {
+  getStatus()
+})
 </script>
 
 <template>
@@ -71,7 +92,6 @@ onMounted(()=>{
     <div class="right-content">
       <!-- 设置店铺状态按钮 -->
       <el-popover trigger="click" placement="bottom" width="150" class="popover-content">
-        <!-- 设置按钮和文字 -->
         <template v-slot:reference>
           <div class="icon-text">
             <el-icon class="icon-btn">
@@ -81,12 +101,10 @@ onMounted(()=>{
           </div>
         </template>
 
-        <!-- 选择营业状态 -->
         <el-button
           size="small"
           @click="setStatus(1)"
           :class="{'status-option': true, 'active': status === 1}"
-          type="text"
         >
           营业中
         </el-button>
@@ -94,7 +112,6 @@ onMounted(()=>{
           size="small"
           @click="setStatus(0)"
           :class="{'status-option': true, 'active': status === 0}"
-          type="text"
         >
           未营业
         </el-button>
@@ -104,8 +121,29 @@ onMounted(()=>{
       <el-icon class="icon-btn">
         <User />
       </el-icon>
+
+      <!-- 退出登录按钮 -->
+      <el-button type="primary" @click="showLogoutDialog">
+        退出登录
+      </el-button>
+
+        <!-- 退出确认对话框 -->
+  <el-dialog
+    v-model="dialogVisible"
+    title="确认退出"
+    width="400px"
+    :before-close="cancelLogout"
+  >
+    <p>您确定要退出登录吗？</p>
+    <template #footer>
+      <el-button @click="cancelLogout" size="small">取消</el-button>
+      <el-button type="primary" @click="logout" size="small">确定</el-button>
+    </template>
+  </el-dialog>
     </div>
   </div>
+
+
 </template>
 
 <style scoped>
@@ -121,17 +159,17 @@ onMounted(()=>{
 .left-content {
   display: flex;
   align-items: center;
-  gap: 15px; /* 适当增加间距 */
+  gap: 15px;
 }
 
 .fold-btn {
   font-size: 24px;
   cursor: pointer;
-  transition: transform 0.3s ease; /* 动画效果 */
+  transition: transform 0.3s ease;
 }
 
 .fold-btn:hover {
-  transform: scale(1.1); /* 鼠标悬停时放大 */
+  transform: scale(1.1);
 }
 
 .status-text {
@@ -161,7 +199,7 @@ onMounted(()=>{
 }
 
 .icon-btn:hover {
-  transform: scale(1.1); /* 鼠标悬停时放大 */
+  transform: scale(1.1);
 }
 
 .icon-text {
@@ -184,10 +222,10 @@ onMounted(()=>{
   font-size: 14px;
   color: #409EFF;
   transition: background-color 0.3s ease;
-  display: flex; /* 设置为flex布局 */
-  align-items: center; /* 垂直居中 */
-  justify-content: center; /* 水平居中 */
-  height: 36px; /* 固定按钮高度 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
 }
 
 .status-option:hover {
@@ -198,8 +236,35 @@ onMounted(()=>{
   background-color: #e6f7ff;
   color: #409EFF;
   font-weight: bold;
+
 }
-.el-button+.el-button{
-    margin-left: 0px;
+
+.el-button+.el-button {
+  margin-left: 0px;
+}
+
+/* Style the dialog */
+.el-dialog {
+  max-width: 100%;
+  margin: 0 auto; /* Center the dialog */
+}
+
+.el-dialog__header {
+  background-color: #409EFF;
+  color: white;
+}
+
+.el-dialog__body {
+  font-size: 14px;
+}
+
+.el-dialog__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.el-button {
+  margin: 0;
 }
 </style>
