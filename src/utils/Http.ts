@@ -16,6 +16,11 @@ const httpInstance = axios.create({
 // 添加请求拦截器
 httpInstance.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {  // 使用 InternalAxiosRequestConfig 类型
+        // 给请求添加token
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers['token'] = token;
+        }
         return config;
     },
     (error: AxiosError) => Promise.reject(error)
@@ -30,9 +35,10 @@ httpInstance.interceptors.response.use(
         if (error.response) {
             // 通过类型断言告诉 TypeScript 你期望 error.response.data 的结构
             const errorData: any = error.response.data;
-            ElMessage({ type: 'warning', message: errorData.message });
+
 
             if (error.response.status === 401) {
+                ElMessage({ type: 'warning', message: "请登录" });
                 router.push('/adminLogin');
             }
 

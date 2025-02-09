@@ -20,7 +20,7 @@ const ref = defineProps({
     
     <div class="menu">
       <el-menu
-        default-active="2"
+        default-active="1"
         :collapse="isFold"
         @open="handleOpen"
         @close="handleClose"

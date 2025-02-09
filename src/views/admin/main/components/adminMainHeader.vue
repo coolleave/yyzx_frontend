@@ -7,10 +7,12 @@ import {
 } from '@element-plus/icons-vue'
 import { ref } from 'vue'
 import { defineEmits, computed } from 'vue'
-
+import {adminGetStatusApi,adminSetStatusApi} from "@/api/admin/shopApi"
+import { onMounted } from 'vue'
+// 定义折叠状态
 const isFold = ref(false)
 
-// 定义信号
+// 定义发送折叠信号
 const emit = defineEmits(['foldEmit'])
 // 折叠展开切换
 const foldChange = () => {
@@ -20,7 +22,14 @@ const foldChange = () => {
   emit('foldEmit', isFold.value)
 }
 
+// 初始化店铺状态
 const status = ref(1)  // 0代表未营业，1代表营业中
+const getStatus  = async()=>{
+  const res = await adminGetStatusApi();
+  status.value = res.data;
+}
+
+
 
 // 计算属性，根据status返回对应的文本和类名
 const statusText = computed(() => {
@@ -32,9 +41,15 @@ const statusClass = computed(() => {
 })
 
 // 设置店铺状态
-const setStatus = (newStatus: number) => {
+const setStatus = async(newStatus: number) => {
+  await adminSetStatusApi(newStatus)
   status.value = newStatus
 }
+
+onMounted(()=>{
+    getStatus()
+})
+
 </script>
 
 <template>
