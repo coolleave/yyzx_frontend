@@ -37,3 +37,10 @@ export function employeeAddApi(fromData: any) {
         fromData
     );
 }
+
+// 删除员工
+export function employeeBanByIdApi({ id, status }: { id: number, status: number }) {
+    return post(
+        `/api/admin/employee/status/${status}?id=${id}`
+    );
+}

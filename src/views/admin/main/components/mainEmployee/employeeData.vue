@@ -1,8 +1,9 @@
 <script setup lang="ts" name="employeeData">
 import { onMounted, ref } from 'vue';
 import {EmployeeStore} from "@/stores/admin/employeeStore"
-import {employeeAddApi} from "@/api/admin/employeeApi"
+import {employeeAddApi,employeeBanByIdApi} from "@/api/admin/employeeApi"
 import { ElMessage } from 'element-plus';
+import { el } from 'element-plus/es/locales.mjs';
 const showDialog = ref(false);
 
 const form = ref({
@@ -61,7 +62,7 @@ const handleConfirm = () => {
     }
   });
 };
-
+// 员工列表数据
 const employList = ref({total:'',records: []});
 
 
@@ -92,8 +93,19 @@ const getEmployee = async(name:any="") => {
     
 };
 defineExpose({getEmployee});
+
+// 启用/禁用员工
+const showBanDialog = ref(false);
+const handleBan = async({id,status}:{id:number,status:number}) => {
+  showBanDialog.value = true;
+  await employeeBanByIdApi({id:id,status:status});
+  ElMessage.success('操作成功');
+    await getEmployee();
+
+};
+
 onMounted(() => {
-    getEmployee();
+  getEmployee();
 });
 </script>
 
@@ -134,33 +146,34 @@ onMounted(() => {
 
     <!-- 数据表格 -->
     <el-table :data="employList.records" style="width: 100%">
-    <el-table-column type="selection"  width="55" />
-    <el-table-column type="index" label="序号" width="80" />
-    <el-table-column prop="username" label="用户名" width="120" />
-    <el-table-column prop="name" label="姓名" width="150" />
-    <el-table-column prop="phone" label="手机号" width="160" />
-    <el-table-column prop="sex" label="性别" width="60" />
-    <el-table-column prop="status" label="状态" width="60">
+    <el-table-column type="index" label="序号" width="80" align="center" />
+    <el-table-column prop="username" label="用户名" width="120" align="center" />
+    <el-table-column prop="name" label="姓名" width="150" align="center" />
+    <el-table-column prop="phone" label="手机号" width="160" align="center" />
+    <el-table-column prop="sex" label="性别" width="60" align="center" />
+    <el-table-column prop="status" label="状态" width="60" align="center">
         <template #default="scope">
             <el-tag v-if="scope.row.status == 1" type="success">启用</el-tag>
             <el-tag v-if="scope.row.status== 0" type="danger">停用</el-tag>
         </template>
     </el-table-column>
 
-    <el-table-column prop="createTime" label="创建时间" width="120" />
-    <el-table-column prop="updateTime" label="更新时间" width="120" />
-    <el-table-column fixed="right" label="操作" min-width="120">
-      <template #default>
-        <el-button link type="primary" size="default" @click="">
+    <el-table-column prop="createTime" label="创建时间" width="160"  align="center"/>
+    <el-table-column prop="updateTime" label="更新时间" width="160"  align="center"/>
+    <el-table-column fixed="right" label="操作" min-width="120" align="center">
+      <template #default="scope">
+        <el-button link type="primary" size="default">
           编辑
         </el-button>
-        <el-button link type="warning" size="default">
-            删除
+        <el-button link type="warning" size="default" @click="handleBan({id:scope.row.id,status:0})" v-if="scope.row.status == 1">
+            禁用
+        </el-button>
+        <el-button link type="success" size="default" @click="handleBan({id:scope.row.id,status:1})" v-if="scope.row.status == 0">
+            启用
         </el-button>
       </template>
     </el-table-column>
   </el-table>
-
   <!-- 分页工具 -->
   <el-pagination
       v-model:current-page="currentPage"
