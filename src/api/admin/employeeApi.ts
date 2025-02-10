@@ -1,4 +1,4 @@
-import { post } from "@/utils/Http"
+import { post, get } from "@/utils/Http"
 
 // 定义 fromData 的类型
 interface AdminLoginParams {
@@ -18,5 +18,22 @@ export function adminLoginApi(fromData: AdminLoginParams) {
 export function adminLogoutApi() {
     return post(
         "/api/admin/employee/logout",
+    );
+}
+
+// 分页条件查询员工列表
+export function employeePageApi({ name, page, pageSize }: { name: string; page: number; pageSize: number }) {
+    // encodeURIComponent(name) 主要作用是将特殊字符（如 &, =, ?, /, 空格等）转义为 URL 安全格式，从而避免参数解析错误。
+    const queryString = `?name=${encodeURIComponent(name)}&page=${page}&pageSize=${pageSize}`;
+    return get(
+        `/api/admin/employee/page${queryString}`
+    );
+}
+
+// 新增员工
+export function employeeAddApi(fromData: any) {
+    return post(
+        "/api/admin/employee",
+        fromData
     );
 }

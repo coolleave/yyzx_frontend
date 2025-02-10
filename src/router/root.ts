@@ -17,6 +17,7 @@ const constantRouterMap = [
   {
     path: '/admin',
     name: 'admin',
+    redirect: '/admin/overview',
     // redirect: '/admin/overview',
     component: () => import('@/views/admin/main/Index.vue'),
     children: [
@@ -30,7 +31,7 @@ const constantRouterMap = [
       {
         path: 'employee',
         name: 'employee',
-        component: () => import('@/views/admin/main/components/mainEmpoyee.vue')
+        component: () => import('@/views/admin/main/components/mainEmployee.vue')
       },
       // 分类
       {
