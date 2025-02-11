@@ -1,4 +1,4 @@
-import { post, get } from "@/utils/Http"
+import { post, get, put } from "@/utils/Http"
 
 // 定义 fromData 的类型
 interface AdminLoginParams {
@@ -42,5 +42,13 @@ export function employeeAddApi(fromData: any) {
 export function employeeBanByIdApi({ id, status }: { id: number, status: number }) {
     return post(
         `/api/admin/employee/status/${status}?id=${id}`
+    );
+}
+
+// 修改员工
+export function employeeEditApi(fromData: any) {
+    return put(
+        '/api/admin/employee',
+        fromData
     );
 }

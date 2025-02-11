@@ -1,9 +1,9 @@
 <script setup lang="ts" name="employeeData">
 import { onMounted, ref } from 'vue';
 import {EmployeeStore} from "@/stores/admin/employeeStore"
-import {employeeAddApi,employeeBanByIdApi} from "@/api/admin/employeeApi"
+import {employeeAddApi,employeeBanByIdApi,employeeEditApi} from "@/api/admin/employeeApi"
 import { ElMessage } from 'element-plus';
-import { el } from 'element-plus/es/locales.mjs';
+
 const showDialog = ref(false);
 
 const form = ref({
@@ -104,6 +104,41 @@ const handleBan = async({id,status}:{id:number,status:number}) => {
 
 };
 
+// 编辑员工
+// 用于显示编辑对话框的标志
+const showEditDialog = ref(false);
+// 用于存储当前编辑的表单数据
+const editForm = ref({
+  idNumber: '',
+  name: '',
+  phone: '',
+  sex: '',
+  username: ''
+});
+
+// 编辑按钮点击时触发
+const handleEdit = (row: any) => {
+  // 将当前行的数据赋值给编辑表单
+  editForm.value = { ...row };
+  showEditDialog.value = true;  // 打开编辑对话框
+}
+
+// 更新数据的方法（提交表单）
+const handleUpdate = async() => {
+  // 提交更新的数据
+  await employeeEditApi(editForm.value);
+  // 提示消息
+  ElMessage.success('更新成功');
+  // 刷新员工列表
+  await getEmployee();
+  showEditDialog.value = false;  // 关闭对话框
+}
+
+// 取消编辑
+const cancelEdit = () => {
+  showEditDialog.value = false;  // 关闭对话框
+}
+
 onMounted(() => {
   getEmployee();
 });
@@ -111,6 +146,7 @@ onMounted(() => {
 
 <template>
   <div class="data">
+    <!-- 新增员工工具 -->
     <div class="insertBtn">
     <h2>员工列表</h2>
       <el-button type="primary" size="small" @click="handleInsert">新增员工</el-button>
@@ -162,7 +198,7 @@ onMounted(() => {
     <el-table-column prop="updateTime" label="更新时间" width="160"  align="center"/>
     <el-table-column fixed="right" label="操作" min-width="120" align="center">
       <template #default="scope">
-        <el-button link type="primary" size="default">
+        <el-button link type="primary" size="default" @click="handleEdit(scope.row)" >
           编辑
         </el-button>
         <el-button link type="warning" size="default" @click="handleBan({id:scope.row.id,status:0})" v-if="scope.row.status == 1">
@@ -174,6 +210,39 @@ onMounted(() => {
       </template>
     </el-table-column>
   </el-table>
+   <!-- 编辑员工信息对话框 -->
+   <el-dialog
+    title="编辑员工"
+    v-model="showEditDialog"
+    width="500px"
+    @close="cancelEdit"
+  >
+    <el-form :model="editForm" label-width="100px">
+      <el-form-item label="身份证号">
+        <el-input v-model="editForm.idNumber" disabled placeholder="请输入身份证号" />
+      </el-form-item>
+      <el-form-item label="姓名">
+        <el-input v-model="editForm.name" placeholder="请输入姓名" />
+      </el-form-item>
+      <el-form-item label="手机号">
+        <el-input v-model="editForm.phone" placeholder="请输入手机号" />
+      </el-form-item>
+      <el-form-item label="性别">
+        <el-select v-model="editForm.sex" placeholder="请选择性别">
+          <el-option label="男" value="男"></el-option>
+          <el-option label="女" value="女"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="用户名">
+        <el-input v-model="editForm.username" placeholder="请输入用户名" />
+      </el-form-item>
+    </el-form>
+
+    <template #footer>
+      <el-button @click="cancelEdit">取消</el-button>
+      <el-button type="primary" @click="handleUpdate">更新</el-button>
+    </template>
+  </el-dialog>
   <!-- 分页工具 -->
   <el-pagination
       v-model:current-page="currentPage"
