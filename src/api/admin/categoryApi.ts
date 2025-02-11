@@ -10,9 +10,9 @@ export function categoryAddApi({ name, sort }: { name: string, sort: number }) {
 }
 
 // 根据id删除分类
-export function categoryDelByIdApi(id: number) {
+export function categoryDelByIdApi(id: string) {
     return del(
-        `/api/admin/category/${id}`
+        `/api/admin/category?id=${id}`
     );
 }
 
