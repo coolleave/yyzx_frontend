@@ -51,12 +51,6 @@ const constantRouterMap = [
         name: 'order',
         component: () => import('@/views/admin/main/components/mainOrder.vue')
       },
-      // 用户
-      {
-        path: 'user',
-        name: 'user',
-        component: () => import('@/views/admin/main/components/mainUser.vue')
-      },
       // 系统
       {
         path: 'system',

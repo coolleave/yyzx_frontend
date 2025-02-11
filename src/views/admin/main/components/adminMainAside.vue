@@ -65,14 +65,9 @@ const ref = defineProps({
           <span>订单管理</span>
         </el-menu-item>
 
-        <!-- 用户管理 -->
-        <el-menu-item index="6" @click="$router.push('/admin/user')">
-          <i class="iconfont icon-user"></i>
-          <span>用户管理</span>
-        </el-menu-item>
 
         <!-- 系统信息 -->
-        <el-menu-item index="7" @click="$router.push('/admin/system')">
+        <el-menu-item index="6" @click="$router.push('/admin/system')">
           <i class="iconfont icon-system"></i>
           <span>系统信息</span>
         </el-menu-item>
