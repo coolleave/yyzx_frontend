@@ -187,7 +187,7 @@ onMounted(() => {
     <el-table-column prop="name" label="姓名" width="150" align="center" />
     <el-table-column prop="phone" label="手机号" width="160" align="center" />
     <el-table-column prop="sex" label="性别" width="60" align="center" />
-    <el-table-column prop="status" label="状态" width="60" align="center">
+    <el-table-column prop="status" label="状态" width="80" align="center">
         <template #default="scope">
             <el-tag v-if="scope.row.status == 1" type="success">启用</el-tag>
             <el-tag v-if="scope.row.status== 0" type="danger">停用</el-tag>
