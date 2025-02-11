@@ -1,15 +1,18 @@
 <script setup lang="ts" name="mainCategory">
 import categorySearch from "../components/mainCategory/categorySearch.vue"
 import categoryData from "./mainCategory/categoryData.vue";
+import { ref } from 'vue'
+
+const dataRef = ref<any>(null);
 const searchHandle = (form: any) => {
-    console.log("查询分类操作",form.name);
+    dataRef.value.getTableData(form.name);
 }
 </script>
 
 <template>
 <div class="mainCategory">
     <categorySearch @search="searchHandle"/>
-    <categoryData/>
+    <categoryData ref="dataRef"/>
 </div>
 
 </template>

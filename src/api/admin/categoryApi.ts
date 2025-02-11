@@ -32,7 +32,7 @@ export function categoryBanByIdApi({ id, status }: { id: number, status: number 
 }
 
 // 分页查询分类，可以添加name参数
-export function categoryPageApi({ name = "", page = 1, pageSize = 10 }: { name: string; page: number; pageSize: number }) {
+export function categoryPageApi({ name, page, pageSize }: { name: string; page: number; pageSize: number } = { name: "", page: 1, pageSize: 10 }) {
     const queryString = `?name=${encodeURIComponent(name)}&page=${page}&pageSize=${pageSize}`;
     return get(
         `/api/admin/category/page${queryString}`
