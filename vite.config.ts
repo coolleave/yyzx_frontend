@@ -29,9 +29,10 @@ export default defineConfig({
       '/api': {
         target: 'http://182.92.111.155',  // 后端服务器地址
         changeOrigin: true,               // 允许代理改变请求头中的 Origin
+        secure: false, // 如果后端是 HTTP，可关闭证书验证
         rewrite: (path) => {
           console.log('Rewriting path:', path);
-          return path.replace(/^\/api/, '');
+          return path;
         }, // 去掉/api前缀
 
       }

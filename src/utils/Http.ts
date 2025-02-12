@@ -21,6 +21,7 @@ httpInstance.interceptors.request.use(
         if (token) {
             config.headers['token'] = token;
         }
+
         return config;
     },
     (error: AxiosError) => Promise.reject(error)
