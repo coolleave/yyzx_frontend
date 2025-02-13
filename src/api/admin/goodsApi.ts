@@ -50,9 +50,18 @@ export function goodsStatusApi(id: string, status: number) {
 }
 
 // 商品分页查询
-export function goodsPageApi({ page, pageSize }: { page: number, pageSize: number }) {
+export function goodsPageApi({ page, pageSize, name, categoryId, status }: { page: number, pageSize: number, name?: string, categoryId?: string, status?: string }) {
+    if (name === undefined) {
+        name = "";
+    }
+    if (categoryId === undefined) {
+        categoryId = "";
+    }
+    if (status === undefined) {
+        status = "";
+    }
     return get(
-        `/api/admin/goods/page?page=${page}&pageSize=${pageSize}`,
+        `/api/admin/goods/page?page=${page}&pageSize=${pageSize}&name=${name}&categoryId=${categoryId}&status=${status}`,
     );
 }
 

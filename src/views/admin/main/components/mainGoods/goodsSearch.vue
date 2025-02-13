@@ -1,22 +1,22 @@
 <script setup lang="ts" name="goodsSearch">
 import { ref, onMounted } from 'vue'
 import { Search } from '@element-plus/icons-vue'
-import { CategoryStore } from '@/stores/admin/categoryStore'
 import { categoryPageApi } from "@/api/admin/categoryApi"
+import { CategoryStore } from '@/stores/admin/categoryStore'
 const emit = defineEmits(['search'])
 const form = ref({
   name: '',
   categoryId: '',  // 添加商品分类字段
-  status: ''   // 添加售卖状态字段
 })
 
 
 const categoryList = ref()  // 修改为默认空数组
-
+const categoryStore = CategoryStore()
 const getCategoryList = async()=>{
     // 分类列表
     const res = await categoryPageApi({ name: "", page: 1, pageSize: 1000 })
     categoryList.value=res.data.records
+    categoryStore.categoryList=categoryList.value
 }
 onMounted( () => {
     getCategoryList()
@@ -44,22 +44,13 @@ const search = () => {
 
       <el-form-item label="商品分类" class="form-item">
         <el-select v-model="form.categoryId" placeholder="请选择商品分类" class="el-select">
+          <!-- 添加一个空选项 -->
+          <el-option :label="'请选择'" value=""/>
           <el-option
             v-for="category in categoryList"
             :key="category.id"
             :label="category.name"
             :value="category.id"
-          />
-        </el-select>
-      </el-form-item>
-
-      <el-form-item label="售卖状态" class="form-item">
-        <el-select v-model="form.sellStatus" placeholder="请选择售卖状态" class="el-select">
-          <el-option
-            v-for="status in sellStatusList"
-            :key="status.value"
-            :label="status.label"
-            :value="status.value"
           />
         </el-select>
       </el-form-item>
@@ -94,6 +85,7 @@ const search = () => {
   flex-wrap: wrap; /* 如果屏幕不够宽时，自动换行 */
   gap: 15px; /* 输入框之间的间距 */
   width: 100%;
+  padding-top: 20px;
 }
 
 .el-form-item {

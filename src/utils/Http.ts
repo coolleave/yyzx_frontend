@@ -57,7 +57,12 @@ const get = (url: string, params: Record<string, any> = {}): Promise<any> => {
 };
 
 // 封装 POST 方法
-const post = (url: string, data: Record<string, any> = {}): Promise<any> => {
+const post = (url: string, data: Record<string, any> = {}, isMultipart: boolean = false): Promise<any> => {
+    const headers: Record<string, string> = {};
+    // 如果是多媒体请求
+    if (isMultipart) {
+        headers['Content-Type'] = 'multipart/form-data';
+    }
     return httpInstance.post(url, data);
 };
 
