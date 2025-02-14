@@ -37,7 +37,6 @@ const handleInsert = () => {
 const insertProduct = (form:any)=>{
 // 在这里处理新增商品的逻辑
 const newItem = { ...form.value }; // 获取表单的数据
-  console.log("新增商品:", newItem);
     // 调用新增商品接口
     goodsAddApi(newItem).then((res) => {
         getGoodsList()
@@ -79,7 +78,6 @@ const handleConfirm = () => {
 // 自定义图片上传接口函数
 const customUpload = async (option: any) => {
   const formData = new FormData();
-  console.log("file 为",option); // 打印出 file 对象，确保它是 File 类型
   formData.append("file", option.file)
 
   try {
@@ -111,7 +109,6 @@ const getGoodsList = async () => {
   const res = await goodsPageApi({page: searchForm.value.page, pageSize: searchForm.value.pageSize });
   goodsList.value = res.data.records;
   goodsTotla.value = res.data.total;
-  console.log("商品列表", goodsList.value);
 };
 
 // 根据 categoryId 获取分类名称
