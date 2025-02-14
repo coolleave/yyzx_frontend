@@ -2,6 +2,14 @@ import { get, post, put, del } from "@/utils/Http";
 
 
 // 新增商品
+interface GoodsAddfrom {
+    categoryId: number;
+    description: string;
+    image: string;
+    name: string;
+    price: number;
+    status: number;
+}
 // {
 //     "categoryId": 10,
 //     "description": "红牛保健品",
@@ -11,7 +19,7 @@ import { get, post, put, del } from "@/utils/Http";
 //     "price": 6,
 //     "status": 1
 // }
-export function goodsAddApi(fromData: any) {
+export function goodsAddApi(fromData: GoodsAddfrom) {
     return post(
         "/api/admin/goods",
         fromData

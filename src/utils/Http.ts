@@ -33,11 +33,15 @@ httpInstance.interceptors.response.use(
         return response.data;  // 对响应数据做点什么
     },
     (error: AxiosError) => {
+        if (error.code === "ERR_NETWORK") {
+            ElMessage({ type: 'warning', message: "网络错误！" });
+            // router.push('/adminLogin');
+        }
+
         if (error.response) {
             // 通过类型断言告诉 TypeScript 你期望 error.response.data 的结构
             const errorData: any = error.response.data;
-
-
+            console.log("请求401");
             if (error.response.status === 401) {
                 ElMessage({ type: 'warning', message: "请登录" });
                 router.push('/adminLogin');
@@ -61,6 +65,7 @@ const post = (url: string, data: Record<string, any> = {}, isMultipart: boolean 
     const headers: Record<string, string> = {};
     // 如果是多媒体请求
     if (isMultipart) {
+        console.log("多媒体请求");
         headers['Content-Type'] = 'multipart/form-data';
     }
     return httpInstance.post(url, data);

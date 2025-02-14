@@ -2,8 +2,8 @@ uploadApi<script setup lang="ts" name="goodsData">
 import { onMounted, ref } from "vue";
 import { uploadApi } from "@/api/admin/uploadApi";  
 import {categoryPageApi} from "@/api/admin/categoryApi"
-import {goodsPageApi,goodsAddApi} from "@/api/admin/goodsApi"
-import { ElMessage } from "element-plus";
+import {goodsPageApi,goodsAddApi,goodsEditApi,goodsStatusApi,goodsDelApi} from "@/api/admin/goodsApi"
+import { ElMessage,ElMessageBox } from "element-plus";
 
 // 分类列表
 const categoryList = ref()
@@ -16,6 +16,7 @@ const getCategoryList = async () =>{
 // 新增商品数据表单
 const form = ref({
     // 取第一个categoryList元素
+  id:null,
   categoryId: null,
   description: "",
   image: "",
@@ -33,15 +34,13 @@ const handleInsert = () => {
   showDialog.value = true;
 };
 
-// 确认新增逻辑
-const handleConfirm = () => {
-    
-  // 在这里处理新增商品的逻辑
-  const newItem = { ...form.value }; // 获取表单的数据
+const insertProduct = (form:any)=>{
+// 在这里处理新增商品的逻辑
+const newItem = { ...form.value }; // 获取表单的数据
   console.log("新增商品:", newItem);
     // 调用新增商品接口
     goodsAddApi(newItem).then((res) => {
-        console.log("新增商品成功", res);
+        getGoodsList()
         ElMessage.success("新增商品成功");
     }).catch((error) => {
         console.error("新增商品失败", error);
@@ -49,6 +48,31 @@ const handleConfirm = () => {
     });
   // 关闭对话框
   showDialog.value = false;
+}
+
+// 编辑商品
+const updateProduct = async (updatedProduct: any) => {
+  await goodsEditApi(updatedProduct)  // 假设 goodsUpdateApi 是用于更新商品的 API
+    .then((res) => {
+      ElMessage.success("商品更新成功");
+      showDialog.value = false;  // 关闭对话框
+      getGoodsList();  // 更新商品列表
+    })
+    .catch((error:any) => {
+      ElMessage.error("商品更新失败");
+      console.error(error);
+    });
+};
+// 确认新增逻辑
+const handleConfirm = () => {
+  if (form.value.id) {
+    // 如果表单中有 id，说明是更新操作
+    updateProduct(form.value);
+  } else {
+    // 否则是新增商品
+    insertProduct(form.value);
+  }
+  
 
 };
 
@@ -84,7 +108,7 @@ const handlePictureUploadSuccess = async (response: any) => {
 const goodsList = ref();
 const goodsTotla = ref(0)
 const getGoodsList = async () => {
-  const res = await goodsPageApi({page: 1, pageSize: 10 });
+  const res = await goodsPageApi({page: searchForm.value.page, pageSize: searchForm.value.pageSize });
   goodsList.value = res.data.records;
   goodsTotla.value = res.data.total;
   console.log("商品列表", goodsList.value);
@@ -117,6 +141,106 @@ const handlePageChange = (currentPage: number, pageSize: number)=>{
     searchForm.value.pageSize = pageSize
     queryGoods()
 }
+
+// 编辑商品
+const handleEdit = (product: any) => {
+  // 打开对话框
+  showDialog.value = true;
+
+  // 将选中的商品数据填充到表单
+  form.value = { ...product };  // 使用展开运算符，确保不直接修改原始对象
+  form.value.categoryId = product.categoryId || null;  // 如果没有分类ID，则默认为 null
+};
+
+// 上架，下架逻辑
+const handBan = async (id:string,status:number)=>{
+  await goodsStatusApi(id,status)
+  getGoodsList()
+
+}
+// 删除商品
+// 删除单个商品
+const handleDelete = async (id: string) => {
+  // 弹出确认框
+  ElMessageBox.confirm("你确定要删除此商品吗?", "确认删除", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  })
+    .then(async () => {
+      try {
+        const res = await goodsDelApi(id); 
+        if(res.code===1){
+          ElMessage.success("商品删除成功");
+        }else{
+          ElMessage.warning(res.msg);
+        }
+        getGoodsList(); // 删除成功后更新商品列表
+      } catch (error) {
+        console.error("删除商品失败", error);
+        ElMessage.error("删除商品失败");
+      }
+    })
+    .catch(() => {
+      console.log("取消删除");
+    });
+};
+
+const selectedIds = ref();
+// 批量删除
+const handleSelectionChange = (goods:any)=>{
+  // 遍历goods，取出id
+  console.log(Object.values(goods));
+  
+
+  // 通过 map 遍历选中的商品，获取它们的 id
+  selectedIds.value = goods.map((item: any) => item.id);
+  // selectedIds.value = goods.map((item: any) => item.id);
+  // selectedIds.value = Object.values(goods);
+  console.log(Object.values(selectedIds.value));
+  
+
+  // console.log("选中的商品 ID 列表:", selectedIds.value);
+  }
+  
+const handleBatchDelete = async () => {
+  
+  // selectedIds.value = goodsList.value.filter((item: any) => item.selection).map((item: any) => item.id); // 获取选中的商品ID
+  if (Object.values(selectedIds.value).length === 0) {
+    ElMessage.warning("请至少选择一个商品");
+    return;
+  }
+
+  // 弹出批量删除确认框
+  ElMessageBox.confirm(
+    `你确定要删除这 ${Object.values(selectedIds.value).length} 个商品吗?`,
+    "确认删除",
+    {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    }
+  )
+    .then(async () => {
+      try {
+
+        const res= await goodsDelApi(Object.values(selectedIds.value).join(",")); // 传入 ID 列表，假设 API 接受用逗号分隔的 ID 字符串
+        if(res.code===1){
+        ElMessage.success("批量删除成功");
+        }else{
+          ElMessage.warning(res.msg);
+        }
+        getGoodsList(); // 删除成功后更新商品列表
+      } catch (error) {
+        console.error("批量删除商品失败", error);
+        ElMessage.error("批量删除商品失败");
+      }
+    })
+    .catch(() => {
+      console.log("取消批量删除");
+    });
+};
+
 onMounted( () => {
     getCategoryList()
     getGoodsList()
@@ -130,13 +254,13 @@ onMounted( () => {
     <h2>商品列表</h2>
     <div class="insertBtn">
       <!-- 批量删除按钮 放在 新增按钮右边 -->
-      <el-button type="danger" @click="">批量删除</el-button>
+      <el-button type="danger" @click="handleBatchDelete">批量删除</el-button>
       <!-- 新增商品按钮 -->
       <el-button type="primary" @click="handleInsert">新增商品</el-button>
     </div>
 
     <!-- 新增商品表单 -->
-    <el-dialog title="新增商品" v-model="showDialog">
+    <el-dialog title="商品操作" v-model="showDialog">
       <el-form ref="formRef" v-model="form" label-width="80px">
         <!-- 商品类别 -->
         <el-form-item label="商品类别">
@@ -198,20 +322,8 @@ onMounted( () => {
       </template>
     </el-dialog>
 
-    <!-- 批量删除确认对话框 -->
-    <el-dialog
-      title="确认删除"
-      width="300px"
-    >
-      <span>你确定要删除所选商品吗？</span>
-      <template #footer>
-        <el-button @click="">取消</el-button>
-        <el-button type="danger" @click="">确定</el-button>
-      </template>
-    </el-dialog>
-
     <!-- 商品列表表格 -->
-    <el-table :data="goodsList" style="width: 100%">
+    <el-table :data="goodsList" style="width: 100%" @selection-change="handleSelectionChange">
       <el-table-column type="selection" align="center" />
       <el-table-column type="index" label="序号" align="center" />
       <el-table-column label="商品名称" prop="name"  align="center" />
@@ -236,19 +348,20 @@ onMounted( () => {
       <el-table-column label="更新时间" prop="updateTime" align="center"/>
       <el-table-column label="操作" align="center" width="200">
       <template #default="scope">
-        <el-button type="primary" size="small" @click="">
-          编辑
-        </el-button>
-        <el-button link type="warning" size="default" @click="" v-if="scope.row.status == 1">
+        <el-button type="primary" size="small" @click="handleEdit(scope.row)">
+  编辑
+</el-button>
+
+        <el-button link type="warning" size="default" @click="handBan(scope.row.id,0)" v-if="scope.row.status == 1">
             下架
         </el-button>
-        <el-button link type="success" size="default" @click="" v-if="scope.row.status == 0">
+        <el-button link type="success" size="default" @click="handBan(scope.row.id,1)" v-if="scope.row.status == 0">
             上架
         </el-button>
         <el-button
           size="small"
           type="danger"
-          @click=""
+          @click="handleDelete(scope.row.id)"
         >
           删除
         </el-button>

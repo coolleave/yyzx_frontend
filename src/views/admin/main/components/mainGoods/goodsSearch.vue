@@ -42,8 +42,8 @@ const search = () => {
         <el-input v-model="form.name" placeholder="请输入商品名称"/>
       </el-form-item>
 
-      <el-form-item label="商品分类" class="form-item">
-        <el-select v-model="form.categoryId" placeholder="请选择商品分类" class="el-select">
+      <el-form-item label="商品分类" class="form-item" >
+        <el-select v-model="form.categoryId" placeholder="请选择商品分类" class="el-select" >
           <!-- 添加一个空选项 -->
           <el-option :label="'请选择'" value=""/>
           <el-option
@@ -83,14 +83,14 @@ const search = () => {
 .form-container {
   display: flex;
   flex-wrap: wrap; /* 如果屏幕不够宽时，自动换行 */
-  gap: 15px; /* 输入框之间的间距 */
+  gap: 10px; /* 输入框之间的间距 */
   width: 100%;
   padding-top: 20px;
 }
 
 .el-form-item {
   margin-bottom: 0; /* 移除底部的间距 */
-  width: 200px; /* 设置每个输入框的最大宽度 */
+  width: 250px; /* 设置每个输入框的最大宽度 */
 }
 
 .el-select,
