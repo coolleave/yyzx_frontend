@@ -34,8 +34,9 @@ httpInstance.interceptors.response.use(
     },
     (error: AxiosError) => {
         if (error.code === "ERR_NETWORK") {
+            router.replace('/adminLogin');
             ElMessage({ type: 'warning', message: "网络错误！" });
-            // router.push('/adminLogin');
+
         }
 
         if (error.response) {
