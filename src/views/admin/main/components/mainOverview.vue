@@ -1,9 +1,13 @@
 <script setup lang="ts" name="mainOverview">
-
+import todayData from './mainOverview/todayData.vue';
+import statistics from './mainOverview/statistics.vue';
 </script>
 
 <template>
-i am overview
+<!-- 今日数据 -->
+<todayData></todayData>
+ <!-- 数据统计 -->
+<statistics></statistics>
 </template>
 
 <style scoped>
