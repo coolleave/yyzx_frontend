@@ -3,40 +3,37 @@
 import { ref, onMounted, nextTick } from 'vue'
 import * as echarts from 'echarts'
 import { ElMessage } from 'element-plus'
-import {getTurnoverStatistics} from "@/api/admin/overviewApi"
+import {getTurnoverStatistics,getOrderStatistics,getUserStatistics,exportExcel} from "@/api/admin/overviewApi"
 
 // 图表实例
 const turnoverChart = ref(null)
 const orderChart = ref(null)
+const userChart = ref(null)
 let turnoverChartInstance = null
 let orderChartInstance = null
-
+let userChartInstance = null
 // 数据
 const dateRange = ref([])
 const chartData = ref({
   dates: [],
   turnover: [],
+  orders: [],
+  users: []
 })
-const quickStats = ref({
-  totalOrders: 1667,
-  validOrders: 1556,
-  completionRate: '90%'
-})
-const salesRank = ref([
-  { name: '商品1', amount: 160 },
-  { name: '商品2', amount: 120 }
-])
 
 // 初始化图表
 const initCharts = () => {
-  turnoverChartInstance = echarts.init(turnoverChart.value)
-//   orderChartInstance = echarts.init(orderChart.value)
-  
+  turnoverChartInstance = echarts.init(turnoverChart.value)  // 营业额折线图
+  orderChartInstance = echarts.init(orderChart.value)  // 订单折线图
+  userChartInstance = echarts.init(userChart.value)  // 用户折线图
+
+  // 通用配置
   const commonOption = {
     tooltip: { trigger: 'axis' },
     grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true }
   }
 
+  // 设置图表配置
   turnoverChartInstance.setOption({
     ...commonOption,
     xAxis: { type: 'category', data: chartData.value.dates },
@@ -44,12 +41,19 @@ const initCharts = () => {
     series: [{ data: chartData.value.turnover, type: 'line' }]
   })
 
-//   orderChartInstance.setOption({
-//     ...commonOption,
-//     xAxis: { type: 'category', data: chartData.value.dates },
-//     yAxis: { type: 'value' },
-//     series: [{ data: chartData.value.orders, type: 'line' }]
-//   })
+  orderChartInstance.setOption({
+    ...commonOption,
+    xAxis: { type: 'category', data: chartData.value.dates },
+    yAxis: { type: 'value' },
+    series: [{ data: chartData.value.orders, type: 'line' }]
+  })
+
+  userChartInstance.setOption({
+    ...commonOption,
+    xAxis: { type: 'category', data: chartData.value.dates },
+    yAxis: { type: 'value' },
+    series: [{ data: chartData.value.users, type: 'line' }]
+  })
 }
 
 // 获取数据
@@ -60,57 +64,44 @@ const fetchData = async () => {
     }
     const beginTime = dateRange.value[0]
     const endTime = dateRange.value[1]
-    const res = await getTurnoverStatistics({begin:beginTime,end:endTime})
-
-    // chartData.value.dates = res.data.dateList
-     // 处理日期格式
-     chartData.value.dates = res.data.dateList.map(date => {
-      const [year, month, day] = date.split('-')  // 假设日期格式为 'yy-mm-dd'
-      return `${month}-${day}`  // 返回 'mm-dd' 格式
+    const resTurnover = await getTurnoverStatistics({begin:beginTime,end:endTime})
+    const resOrder = await getOrderStatistics({begin:beginTime,end:endTime})
+    const resUser = await getUserStatistics({begin:beginTime,end:endTime})
+    // 处理 dateList 字符串
+    const dateList = resTurnover.data.dateList ? resTurnover.data.dateList.split(',') : []
+    chartData.value.dates = dateList.map(date => {
+      const [year, month, day] = date.split('-') // 假设日期格式为 'yyyy-mm-dd'
+      return `${month}-${day}` // 返回 'mm-dd' 格式
     })
-    // quickStats.value = res.stats
-    // salesRank.value = res.rank
-
+    // 营业额数据
+    chartData.value.turnover = resTurnover.data.turnoverList ? resTurnover.data.turnoverList.split(',').map(item => item === "" ? 0 : parseFloat(item)) : []
+    // 订单数据
+    chartData.value.orders = resOrder.data.orderCountList ? resOrder.data.orderCountList.split(',') : []
+    // 用户数据
+    chartData.value.users = resUser.data.totalUserList ? resUser.data.totalUserList.split(',') : []
+    
     nextTick(() => {
       turnoverChartInstance.setOption({
         xAxis: { data: chartData.value.dates },
         series: [{ data: chartData.value.turnover }]
       })
-    //   orderChartInstance.setOption({
-    //     xAxis: { data: chartData.value.dates },
-    //     series: [{ data: chartData.value.orders }]
-    //   })
+      orderChartInstance.setOption({
+        xAxis: { data: chartData.value.dates },
+        series: [{ data: chartData.value.orders }]
+      })
+      userChartInstance.setOption({
+        xAxis: { data: chartData.value.dates },
+        series: [{ data: chartData.value.users }]
+      })
     })
- 
+ ElMessage.success("获取数据成功")
 }
 
 // 导出Excel
-const exportExcel = () => {
-  
-}
+const handleExportExcel = async() => {
+  const res = await exportExcel()
 
-// 模拟API
-const mockApiRequest = () => {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve({
-        chartData: {
-          dates: ['4-1', '4-2', '4-3', '4-4', '4-5'],
-          turnover: [120, 150, 100, 180, 160],
-          orders: [500, 800, 600, 1200, 1000]
-        },
-        stats: {
-          totalOrders: 1667,
-          validOrders: 1556,
-          completionRate: '93%'
-        },
-        rank: [
-          { name: '商品1', amount: 160 },
-          { name: '商品2', amount: 120 }
-        ]
-      })
-    }, 500)
-  })
+  
 }
 
 onMounted(() => {
@@ -133,16 +124,12 @@ onMounted(() => {
         value-format="YYYY-MM-DD"
         @change="fetchData"
       />
-      <el-button type="primary" @click="exportExcel">导出Excel</el-button>
+      <el-button type="primary" @click="handleExportExcel">导出Excel</el-button>
     </div>
 
     <!-- 统计数据 -->
-    <div class="stats-group">
-      <el-row :gutter="20">
-        <el-col :span="6" v-for="(item, index) in quickStats" :key="index">
-          <el-statistic :title="item.label" :value="item.value" />
-        </el-col>
-      </el-row>
+    <div class="chartTitle">
+      <h2>营业额统计</h2>
     </div>
 
     <!-- 营业额图表 -->
@@ -151,17 +138,19 @@ onMounted(() => {
     </div>
 
     <!-- 订单图表 -->
+    <div class="chartTitle">
+      <h2>订单统计</h2>
+    </div>
     <div class="chart-container">
       <div ref="orderChart" style="height: 400px;"></div>
     </div>
 
-    <!-- 销售排名 -->
-    <div class="top10-container">
-      <h3>销售排名TOP10</h3>
-      <el-table :data="salesRank" style="width: 100%">
-        <el-table-column prop="name" label="商品名称" />
-        <el-table-column prop="amount" label="销售额" />
-      </el-table>
+    <!-- 用户统计折线图 -->
+     <div class="chartTitle">
+      <h2>用户统计</h2>
+    </div>
+    <div class="chart-container">
+      <div ref="userChart" style="height: 400px;"></div>
     </div>
   </div>
 </template>

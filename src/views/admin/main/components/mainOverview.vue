@@ -7,6 +7,7 @@ import statistics from './mainOverview/statistics.vue';
 <!-- 今日数据 -->
 <todayData></todayData>
  <!-- 数据统计 -->
+<h2>数据统计</h2>
 <statistics></statistics>
 </template>
 

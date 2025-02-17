@@ -23,7 +23,6 @@ export const EmployeeStore = defineStore(
 
             } catch (error) {
                 console.error("获取员工信息失败:", error);
-                // 可以在这里设置一个错误状态或返回默认值等
             }
         };
 
