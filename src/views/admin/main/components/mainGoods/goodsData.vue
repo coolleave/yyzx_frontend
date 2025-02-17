@@ -1,5 +1,5 @@
 uploadApi<script setup lang="ts" name="goodsData">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, nextTick  } from "vue";
 import { uploadApi } from "@/api/admin/uploadApi";  
 import {categoryPageApi} from "@/api/admin/categoryApi"
 import {goodsPageApi,goodsAddApi,goodsEditApi,goodsStatusApi,goodsDelApi} from "@/api/admin/goodsApi"
@@ -32,6 +32,20 @@ const showDialog = ref(false);
 const handleInsert = () => {
   // 弹出新增商品的对话框
   showDialog.value = true;
+  form.value = { // 重置表单数据
+    id: null,
+    categoryId: null,
+    description: "",
+    image: "",
+    name: "",
+    price: null,
+    status: 1
+  };
+  showDialog.value = true;
+  // 清空上传组件状态
+  nextTick(() => {
+    uploadRef.value?.clearFiles();
+  });
 };
 
 const insertProduct = (form:any)=>{
@@ -54,8 +68,9 @@ const updateProduct = async (updatedProduct: any) => {
   await goodsEditApi(updatedProduct)  // 假设 goodsUpdateApi 是用于更新商品的 API
     .then((res) => {
       ElMessage.success("商品更新成功");
-      showDialog.value = false;  // 关闭对话框
       getGoodsList();  // 更新商品列表
+      showDialog.value = false;  // 关闭对话框
+      
     })
     .catch((error:any) => {
       ElMessage.error("商品更新失败");
@@ -83,8 +98,10 @@ const customUpload = async (option: any) => {
   try {
     // 调用接口上传文件
     const response = await uploadApi(formData);
-    // 假设接口返回的图片链接在response中
+    // 接口返回的图片链接在response中
     handlePictureUploadSuccess(response);
+     // 通知上传完成，清除上传状态
+     option.onSuccess(response.data, option.file);
   } catch (error) {
     console.error('上传图片失败', error);
   }
@@ -139,14 +156,17 @@ const handlePageChange = (currentPage: number, pageSize: number)=>{
     queryGoods()
 }
 
+// 新增上传组件ref
+const uploadRef = ref();
 // 编辑商品
 const handleEdit = (product: any) => {
   // 打开对话框
   showDialog.value = true;
-
-  // 将选中的商品数据填充到表单
-  form.value = { ...product };  // 使用展开运算符，确保不直接修改原始对象
-  form.value.categoryId = product.categoryId || null;  // 如果没有分类ID，则默认为 null
+  form.value = { ...product };
+  // 清空上传组件状态（编辑时保留原有图片）
+  nextTick(() => {
+    uploadRef.value?.clearFiles();
+  });
 };
 
 // 上架，下架逻辑
@@ -188,21 +208,13 @@ const selectedIds = ref();
 const handleSelectionChange = (goods:any)=>{
   // 遍历goods，取出id
   console.log(Object.values(goods));
-  
-
   // 通过 map 遍历选中的商品，获取它们的 id
   selectedIds.value = goods.map((item: any) => item.id);
-  // selectedIds.value = goods.map((item: any) => item.id);
-  // selectedIds.value = Object.values(goods);
   console.log(Object.values(selectedIds.value));
-  
-
-  // console.log("选中的商品 ID 列表:", selectedIds.value);
   }
   
 const handleBatchDelete = async () => {
   
-  // selectedIds.value = goodsList.value.filter((item: any) => item.selection).map((item: any) => item.id); // 获取选中的商品ID
   if (Object.values(selectedIds.value).length === 0) {
     ElMessage.warning("请至少选择一个商品");
     return;
@@ -285,10 +297,12 @@ onMounted( () => {
         <!-- 商品图片 -->
         <el-form-item label="商品图片">
             <el-upload
+                ref="uploadRef"
                 :show-file-list="false"
                 :limit="1"
                 :auto-upload="true"
                 :http-request="customUpload"
+                
             >
                 <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
