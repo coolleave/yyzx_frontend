@@ -26,7 +26,7 @@ const currentDate = computed(() => {
 const getTodayData = async()=>{
   const res = await getBuinessData();
   todayData.turnover = res.data.turnover;
-  todayData.validOrders = res.data.validOrders;
+  todayData.validOrders = res.data.validOrderCount;
   todayData.completionRate = res.data.orderCompletionRate;
   todayData.averagePrice = res.data.unitPrice;
   todayData.newUsers = res.data.newUsers;
@@ -45,9 +45,9 @@ const orderStatus = reactive({
 const getOrderStatus = async()=>{
   const res = await getOrderData();
   orderStatus.pending = res.data.waitingOrders;
-  orderStatus.delivering = res.data.deliverOrders;
+  orderStatus.delivering = res.data.deliveredOrders;
   orderStatus.completed = res.data.completedOrders;
-  orderStatus.canceled = res.data.canceledOrders;
+  orderStatus.canceled = res.data.cancelledOrders;
   orderStatus.total = res.data.allOrders;
 }
 

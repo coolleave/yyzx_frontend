@@ -29,7 +29,11 @@ httpInstance.interceptors.request.use(
 
 // 添加响应拦截器
 httpInstance.interceptors.response.use(
+
     (response: AxiosResponse) => {
+        if (response.config.responseType === 'blob') {
+            return response;
+        }
         return response.data;  // 对响应数据做点什么
     },
     (error: AxiosError) => {
@@ -57,12 +61,18 @@ httpInstance.interceptors.response.use(
 );
 
 // 封装 GET 方法
-const get = (url: string, params: Record<string, any> = {}): Promise<any> => {
-    return httpInstance.get(url, { params });
+const get = (url: string, params: Record<string, any> = {}, isDownload: boolean = false): Promise<any> => {
+    const headers: Record<string, string> = {};
+    // 如果是下载请求
+    const config: AxiosRequestConfig = {
+        params,
+        responseType: isDownload ? 'blob' : 'json' // 关键设置
+    };
+    return httpInstance.get(url, config);
 };
 
 // 封装 POST 方法
-const post = (url: string, data: Record<string, any> = {}, isMultipart: boolean = false): Promise<any> => {
+const post = (url: string, data: Record<string, any> = {}, isMultipart: boolean = false,): Promise<any> => {
     const headers: Record<string, string> = {};
     // 如果是多媒体请求
     if (isMultipart) {

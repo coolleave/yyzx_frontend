@@ -4,7 +4,6 @@ import { ref, onMounted, nextTick } from 'vue'
 import * as echarts from 'echarts'
 import { ElMessage } from 'element-plus'
 import {getTurnoverStatistics,getOrderStatistics,getUserStatistics,exportExcel} from "@/api/admin/overviewApi"
-
 // 图表实例
 const turnoverChart = ref(null)
 const orderChart = ref(null)
@@ -99,10 +98,51 @@ const fetchData = async () => {
 
 // 导出Excel
 const handleExportExcel = async() => {
-  const res = await exportExcel()
+    const res = await exportExcel()
+    console.log(typeof res);
+    const blob = new Blob([res.data]);
+    // 创建下载链接
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob); // 创建一个指向 Blob 的 URL
+
+    // 设置链接的下载属性
+    link.href = url;
+    // 获取今天的日期
+    const today = new Date();
+
+    // 获取昨天的日期
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);   
+
+  // 获取30天前的日期
+    const thirtyDaysAgo = new Date(today);
+    thirtyDaysAgo.setDate(today.getDate() - 30);
+
+    // 格式化日期为 YYYY-MM-DD 格式
+    const formatDate = (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    // 获取30天前到昨天的日期范围
+    const startDate = formatDate(thirtyDaysAgo);
+    const endDate = formatDate(yesterday);
+
+    const name = `宇优在线${startDate}至${endDate}营业数据.xlsx`;
+
+    link.download = name; // 设置文件下载时的文件名
+
+    // 触发点击事件，开始下载
+    link.click();
+
+    // 释放创建的 URL
+    URL.revokeObjectURL(url);
+};
 
   
-}
+
 
 onMounted(() => {
   initCharts()
@@ -124,7 +164,7 @@ onMounted(() => {
         value-format="YYYY-MM-DD"
         @change="fetchData"
       />
-      <el-button type="primary" @click="handleExportExcel">导出Excel</el-button>
+      <el-button type="primary" @click="handleExportExcel">导出近30日Excel</el-button>
     </div>
 
     <!-- 统计数据 -->

@@ -54,7 +54,9 @@ export function getTOP10({ begin, end }: { begin: any, end: any }) {
 // 导出excel数据
 export function exportExcel() {
     return get(
-        "/api/admin/report/export"
+        "/api/admin/report/export",
+        {},
+        true
     )
 }
 
