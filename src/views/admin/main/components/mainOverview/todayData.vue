@@ -204,7 +204,7 @@ onMounted(()=>{
     </ElRow>
   </div>
     <div class="detail-link">
-      <a href="#">查看订单明细 ></a>
+  <router-link to="order">查看订单明细 ></router-link>
     </div>
   </div>
   </div>

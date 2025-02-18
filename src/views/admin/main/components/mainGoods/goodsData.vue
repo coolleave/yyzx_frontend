@@ -207,10 +207,8 @@ const selectedIds = ref();
 // 批量删除
 const handleSelectionChange = (goods:any)=>{
   // 遍历goods，取出id
-  console.log(Object.values(goods));
   // 通过 map 遍历选中的商品，获取它们的 id
   selectedIds.value = goods.map((item: any) => item.id);
-  console.log(Object.values(selectedIds.value));
   }
   
 const handleBatchDelete = async () => {
