@@ -1,4 +1,4 @@
-import { get, post, put, del } from '@/utils/Http'
+import { get, put } from '@/utils/Http'
 
 
 // 接单
@@ -36,7 +36,7 @@ export function completeOrder(id: number) {
 
 // 查询订单详情
 export function getOrderDetail(id: number) {
-    return get(`/api/admin/order/${id}`
+    return get(`/api/admin/order/details/${id}`
     )
 }
 

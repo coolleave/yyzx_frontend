@@ -39,7 +39,6 @@ httpInstance.interceptors.response.use(
     (error: AxiosError) => {
         if (error.code === "ERR_NETWORK") {
             ElMessage({ type: 'warning', message: "网络错误！" });
-
         }
 
         if (error.response) {
