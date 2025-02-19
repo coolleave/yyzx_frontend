@@ -6,7 +6,6 @@ const dataRef = ref();
 const handleSearch = (form: any) => {
   dataRef.value.searchForm.name = form.name;
   dataRef.value.searchForm.categoryId = form.categoryId;
-  console.log(dataRef.value.searchForm);
   dataRef.value.queryGoods();
 }
 

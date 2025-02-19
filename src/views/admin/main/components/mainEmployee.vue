@@ -6,7 +6,6 @@ import { ref } from 'vue'
 const contentRef = ref<any>(null);
 const handleSearch = (form: any) => {
     // 获取子组件的ref
-    console.log("contentRef",contentRef.value);
     
     // 调用子组件的方法
     contentRef.value?.getEmployee(form.name)

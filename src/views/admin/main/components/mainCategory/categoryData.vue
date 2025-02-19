@@ -20,7 +20,6 @@ const handleAddCategory = () => {
 
 // 提交新增分类数据
 const handleSubmit = async() => {
-  console.log("提交数据:", formAdd.value);
   try{
     await categoryAddApi(formAdd.value);
     ElMessage.success('新增分类成功');
@@ -36,7 +35,6 @@ const getTableData = async(name:string="") => {
   const res = await categoryPageApi({name:name,page:1,pageSize:10});
   categoryStore.categoryList = res.data.records;
   categoryStore.categoryTotal = res.data.total;
-  console.log("categoryList",categoryStore.categoryList);
   
 };
 defineExpose({getTableData});
@@ -55,7 +53,6 @@ const handleBan = async({id,status}:{id:number,status:number}) => {
 const handleDelete = async(id: string) => {
   // 这里可以调用接口进行删除操作
   await categoryDelByIdApi(id);
-  console.log(`删除 ID: ${id} 的分类`);
   getTableData();
   ElMessage.success('删除成功');
 };
@@ -100,7 +97,6 @@ const handleEdit = (row:any) => {
 
 // 提交编辑数据
 const handleSave = async() => {
-  console.log("编辑后的数据:", editForm.value);
   await categoryEditApi(editForm.value)
   showEditDialog.value = false; // 关闭对话框
   getTableData()

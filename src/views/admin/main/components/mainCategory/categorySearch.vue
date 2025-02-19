@@ -9,7 +9,6 @@ const searchFrom = ref({
 const emit = defineEmits(["search"]);
 
 const onSubmit = () => {
-    console.log("searchFrom", searchFrom.value.name);
     emit("search", searchFrom.value);
 };
 

@@ -1,12 +1,5 @@
 <script setup lang="ts" name="adminMainAside">
-import { de } from 'element-plus/es/locales.mjs';
 
-const handleOpen = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
-const handleClose = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
 
 const ref = defineProps({
   isFold: Boolean
@@ -22,8 +15,6 @@ const ref = defineProps({
       <el-menu
         default-active="0"
         :collapse="isFold"
-        @open="handleOpen"
-        @close="handleClose"
         background-color="#2c3e50"
         text-color="#bfcbd9"
         active-text-color="#409EFF"

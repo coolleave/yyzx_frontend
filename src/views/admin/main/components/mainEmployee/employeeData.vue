@@ -51,7 +51,6 @@ const handleInsert = () => {
 const handleConfirm = () => {
   formRef.value?.validate(async(valid:any) => {
     if (valid) {
-      console.log('提交数据:', form.value);
       await employeeAddApi(form.value);
       await getEmployee();
       // 消息提示
@@ -87,10 +86,7 @@ const getEmployee = async(name:any="") => {
     let queryPageSize = pageSize.value;
     await employeeStore.getEmployeeList({name:name,page:queryPage,pageSize:queryPageSize});
     employList.value = employeeStore.employeeList;
-    
     total.value=Number(employList.value.total)
-    console.log("获取员工信息成功:", employList.value);
-    
 };
 defineExpose({getEmployee});
 
