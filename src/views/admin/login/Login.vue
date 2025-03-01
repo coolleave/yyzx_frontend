@@ -65,8 +65,10 @@ const login = async () => {
         // console.log(localStorage.getItem('token'));
         ElMessage.success('登录成功');
         // 跳转到首页
-        router.push('/admin');
-        console.log("跳转首页");
+        router.replace('/admin');
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
         
     } else {
         // 登录失败
