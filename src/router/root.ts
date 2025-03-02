@@ -1,10 +1,33 @@
-
 // 路由表
 const constantRouterMap = [
   // ************* 前台路由 **************
   {
     path: '/',
-    redirect: '/admin'
+    redirect: '/index'
+  },
+  // 首页
+  {
+    path: '/index',
+    name: 'index',
+    redirect: '/index/portal',
+    component: () => import('@/views/index/Index.vue'),
+    children: [
+      {
+        path: 'login',
+        name: 'login',
+        component: () => import('@/views/index/Login.vue')
+      },
+      {
+        path: 'register',
+        name: 'register',
+        component: () => import('@/views/index/Register.vue')
+      },
+      {
+        path: 'portal',
+        name: 'portal',
+        component: () => import('@/views/index/Portal.vue')
+      },
+    ]
   },
   // ************* 后台路由 **************
   // 后台登录
