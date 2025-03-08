@@ -5,6 +5,11 @@ const constantRouterMap = [
     path: '/',
     redirect: '/index'
   },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('@/views/index/Login.vue')
+  },
   // 首页
   {
     path: '/index',
@@ -12,11 +17,7 @@ const constantRouterMap = [
     redirect: '/index/portal',
     component: () => import('@/views/index/Index.vue'),
     children: [
-      {
-        path: 'login',
-        name: 'login',
-        component: () => import('@/views/index/Login.vue')
-      },
+
       {
         path: 'register',
         name: 'register',
@@ -29,6 +30,7 @@ const constantRouterMap = [
       },
     ]
   },
+
   // ************* 后台路由 **************
   // 后台登录
   {
