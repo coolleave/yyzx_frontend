@@ -15,7 +15,7 @@
   
       <!-- 登录表单 -->
       <div class="login-form">
-        <h2 class="title">密码登录</h2>
+        <h2 class="title">登录</h2>
   
         <form @submit.prevent="handleSubmit">
           <!-- 手机号输入 -->
