@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
+
 const categories = ["全部", "办公用品", "电子产品", "家电", "玩具", "图书", "食品", "服装"];
 const products = [
-  { name: "笔记本电脑包", image: "laptop_bag.jpg" },
-  { name: "灰色短袖T恤", image: "gray_tshirt.jpg" },
-  { name: "印花白T恤", image: "printed_tshirt.jpg" }
+  { id:1,name: "笔记本电脑包", image: "laptop_bag.jpg" },
+  { id:2,name: "灰色短袖T恤", image: "gray_tshirt.jpg" },
+  { id:3,name: "印花白T恤", image: "printed_tshirt.jpg" }
 ];
 const selectedCategory = ref("全部");
+
+const goodsDetial = (id:number)=>{
+  window.open(`/index/goodsDetial/${id}`, '_blank');
+}
 </script>
 
 <template>
@@ -29,8 +34,8 @@ const selectedCategory = ref("全部");
     <!-- 右侧商品展示 -->
     <div class="product-list">
       <h2>最新商品</h2>
-      <div class="grid">
-        <div v-for="product in products" :key="product.name" class="product-card">
+      <div class="grid" >
+        <div v-for="product in products" :key="product.name" class="product-card" @click="goodsDetial(product.id)">
           <img :src="product.image" alt="product.name" />
           <p>{{ product.name }}</p>
         </div>

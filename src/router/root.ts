@@ -18,16 +18,21 @@ const constantRouterMap = [
     component: () => import('@/views/index/Index.vue'),
     children: [
 
-      {
-        path: 'register',
-        name: 'register',
-        component: () => import('@/views/index/Register.vue')
-      },
+      // {
+      //   path: 'register',
+      //   name: 'register',
+      //   component: () => import('@/views/index/Register.vue')
+      // },
       {
         path: 'portal',
         name: 'portal',
         component: () => import('@/views/index/Portal.vue')
       },
+      {
+        path: 'goodsDetial/:id',
+        name: 'goodsDetial',
+        component: () => import('@/views/index/GoodsDetial.vue')
+      }
     ]
   },
 
