@@ -21,6 +21,7 @@ export const AddressStore = defineStore('address', () => {
 
     // 查询默认地址
     const getDefaultAddress = async () => {
+        setDefaultAddressApi
         try {
             // 调用接口查询默认地址
             const res = await getDefaultAddressApi()
