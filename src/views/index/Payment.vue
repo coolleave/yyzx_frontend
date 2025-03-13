@@ -19,6 +19,11 @@ const orderData = [
     quantity: 1
   }
 ]
+
+const sumbit = () => {
+  console.log('提交订单')
+  
+}
 </script>
 
 <template>
@@ -90,7 +95,7 @@ const orderData = [
 
             <div class="action-btns">
               <el-button plain class="back-btn" @click="$router.back()">返回</el-button>
-              <el-button type="danger" class="submit-btn">提交订单</el-button>
+              <el-button type="danger" class="submit-btn" @click="sumbit">提交订单</el-button>
             </div>
           </div>
         </el-col>

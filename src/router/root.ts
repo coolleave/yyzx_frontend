@@ -32,6 +32,11 @@ const constantRouterMap = [
         path: 'goodsDetial/:id',
         name: 'goodsDetial',
         component: () => import('@/views/index/GoodsDetial.vue')
+      },
+      {
+        path: 'paysuccess/:orderNumber',
+        name: 'paysuccess',
+        component: () => import('@/views/index/PaySuccess.vue')
       }
     ]
   },
