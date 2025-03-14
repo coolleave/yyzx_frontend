@@ -17,12 +17,6 @@ const constantRouterMap = [
     redirect: '/index/portal',
     component: () => import('@/views/index/Index.vue'),
     children: [
-
-      // {
-      //   path: 'register',
-      //   name: 'register',
-      //   component: () => import('@/views/index/Register.vue')
-      // },
       {
         path: 'portal',
         name: 'portal',
